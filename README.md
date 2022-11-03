@@ -35,7 +35,7 @@ Step 2a: Open "COVID.R"
 
 Step 2b: Run all code in "Covid model.R" after change the spesific root.
 
-Step 3: Run all code "ROC.R" and then change the marker by type model.
+Step 3: Run all code "ROC curve.R" and then change the marker by type model.
 
 Step 4: write summary(mod.ln) and summary(mod.cox) for result of each model.
 
