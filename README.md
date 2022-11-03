@@ -1,7 +1,7 @@
 # COVID-south-korea-
 
 1. The dataset
-patient.csv: https://www.kaggle.com/datasets/kimjihoo/coronavirusdataset?select=PatientInfo.csv. (patientinfo.csv)
+patient.csv: https://www.kaggle.com/datasets/kimjihoo/coronavirusdataset?select=PatientInfo.csv. (PatientInfo.csv)
 
  a. patient.id: patient id from south korea earlier 2020.
  
