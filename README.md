@@ -23,7 +23,7 @@ patient.csv: https://www.kaggle.com/datasets/kimjihoo/coronavirusdataset?select=
 5. To know the weight, just write stacked.est$alphas
 6. Result 
 
-a. The qqplot shows that the lognormal distribution is better distribution for the dataset
+a. The qqplot shows that the lognormal distribution is better distribution than weibull and exponential distribution for the dataset
 
 b. The ROC of stacked method and rsf has similar result
  
