@@ -1,14 +1,12 @@
 ########################################################################################################
 ########################################################################################################
 #
-# An illustration of the stacked survival models using the German Breast Cancer study.  See the main
-#	paper for a more detailed description of the analysis.
-#
+# An illustration of the stacked survival models using the COVID of south Korea dataset. 
 ########################################################################################################
 ########################################################################################################
 
 
-# 'root' is the directory where the files are stored.  This is computor specific
+# 'root' is the directory where the files are stored.  This is computer specific
 root <- "/Users/Lenovo/Downloads/covid/"
 
 
@@ -67,6 +65,12 @@ potX <- as.matrix(dat2[, potVars])
 mod.ln <- survreg(Surv(time, Event) ~ age +sex, 
 				data = dat2, dist = "lognormal")
 
+mod.exp <- survreg(Surv(time, Event) ~ age +sex, 
+				data = dat2, dist = "exponential")
+
+mod.weib <- survreg(Surv(time, Event) ~ age +sex, 
+				data = dat2, dist = "weib")
+
 mod.cox <- coxph(Surv(time, Event) ~ age + sex, 
 				data = dat2)
 
@@ -88,12 +92,6 @@ coxSurvAll <- matrix(unlist(sapply({1:length(survAll.X$time)}[survAll.X$n.event 
 				if(survAll.X$n.event[x] == 1){ tmp1 <- survAll.X$surv[x, ] }
 				if(survAll.X$n.event[x] >  1){ tmp1 <- matrix(rep(survAll.X$surv[x, ], 2), ncol = 2) }
 				return(tmp1) })), ncol = sum(dat2$Event))
-coba=sapply({1:length(survAll.X$time)}[survAll.X$n.event > 0], function(x){
-				if(survAll.X$n.event[x] == 1){ tmp1 <- survAll.X$surv[x, ] }
-				if(survAll.X$n.event[x] >  1){ tmp1 <- matrix(rep(survAll.X$surv[x, ], 2), ncol = 2) }
-				return(tmp1) })
-coba2=matrix(unlist(coba),ncol = sum(dat2$Event))
-#coba2=ldply(coba, fill = TRUE)
 
 
 # previous code required the construction of a list in this format; should only need the 'Surv_predict' part now
@@ -159,110 +157,6 @@ stacked.est  <- stacking_ensemble(dat2$time, dat2$Event, potX, surv.lst1, surv.l
 # Note that the weight estimates are slightly different from the paper due to differences between the
 #	'randomSurvivalForest' package and the 'randomForestSRC' package
 
-
-
-
-
-# the GBCS analysis investigates the effect of covariates on five-year survival.  This selects the column that
-#	corresponds to five-year survival
-
-pred5.TI  <- stacked.est$Surv_predict[, sum(stacked.est$timeInterest <= 1826.225)]
-pred5.Cox <- coxModAll$Surv_predict[, sum(stacked.est$timeInterest <= 1826.225)]
-pred5.lgn <- logNormAll$Surv_predict[, sum(stacked.est$timeInterest <= 1826.225)]
-pred5.wbl <- weibullAll$Surv_predict[, sum(stacked.est$timeInterest <= 1826.225)]
-pred5.rsf <- rsfAll$Surv_predict[, sum(stacked.est$timeInterest <= 1826.225)]
-
-
-
-
-
-
-
-library(mgcv)	# for fitting b-splines
-
-
-pred.dat <- data.frame(prob5.TI = pred5.TI, prob5.Cox = pred5.Cox, prob5.lgn = pred5.lgn, 
-	prob5.wbl = pred5.wbl, prob5.rsf = pred5.rsf, x1 = stacked.est$predictors[,1], x2 = stacked.est$predictors[,2], 
-	x3 = stacked.est$predictors[,3], x4 = stacked.est$predictors[,4], x5 = stacked.est$predictors[,5], 
-	x6 = stacked.est$predictors[,6], x7 = stacked.est$predictors[,7], x8 = stacked.est$predictors[,8])
-
-
-
-mod.TI  <- gam(prob5.TI ~ s(x1, bs = "cr") + s(x2, bs = "cr") + x3 + s(x4, bs = "cr") + x5 + 
-			s(x6, bs = "cr") + s(x7, bs = "cr") + x8, data = pred.dat)
-mod.Cox <- gam(prob5.Cox ~ s(x1, bs = "cr") + s(x2, bs = "cr") + x3 + s(x4, bs = "cr") + x5 + 
-			s(x6, bs = "cr") + s(x7, bs = "cr") + x8, data = pred.dat)
-mod.lgn <- gam(prob5.lgn ~ s(x1, bs = "cr") + s(x2, bs = "cr") + x3 + s(x4, bs = "cr") + x5 + 
-			s(x6, bs = "cr") + s(x7, bs = "cr") + x8, data = pred.dat)
-mod.wbl <- gam(prob5.wbl ~ s(x1, bs = "cr") + s(x2, bs = "cr") + x3 + s(x4, bs = "cr") + x5 + 
-			s(x6, bs = "cr") + s(x7, bs = "cr") + x8, data = pred.dat)
-mod.rsf <- gam(prob5.rsf ~ s(x1, bs = "cr") + s(x2, bs = "cr") + x3 + s(x4, bs = "cr") + x5 + 
-			s(x6, bs = "cr") + s(x7, bs = "cr") + x8, data = pred.dat)
-
-
-
-pred.DATA <- data.frame(x1 = 0.8 * 1:100, x2 = 1.2 * 1:100, x3 = rep(mean(stacked.est$predictors[,3]), 100), 
-	x4 = 1:100 / 2, x5 = rep(mean(stacked.est$predictors[,5]), 100), x6 = 24 * 1:100, x7 = 11 * 1:100,
-	x8 = rep(mean(stacked.est$predictors[,8]), 100))
-
-
-pred.DATA.t1 <- data.frame(x1 = rep(median(stacked.est$predictors[,1]), 100), x2 = 1.2 * 1:100, 
-	x3 = rep(median(stacked.est$predictors[,3]), 100), x4 = rep(median(stacked.est$predictors[,4]), 100),
-	x5 = rep(median(stacked.est$predictors[,5]), 100), x6 = rep(median(stacked.est$predictors[,6]), 100), 
-	x7 = rep(median(stacked.est$predictors[,7]), 100), x8 = rep(median(stacked.est$predictors[,8]), 100))
-
-
-pred.DATA.t2 <- data.frame(x1 = rep(median(stacked.est$predictors[,1]), 100), 
-	x2 = rep(median(stacked.est$predictors[,2]), 100), x3 = rep(median(stacked.est$predictors[,3]), 100), 
-	x4 = 1:100 / 2, x5 = rep(median(stacked.est$predictors[,5]), 100), 
-	x6 = rep(median(stacked.est$predictors[,6]), 100), x7 = rep(median(stacked.est$predictors[,7]), 100),
-	x8 = rep(median(stacked.est$predictors[,8]), 100))
-
-
-
-
-
-
-
-TI.pred.5ys1  <- predict(mod.TI, newdata = pred.DATA.t1, type = "link")
-Cox.pred.5ys1 <- predict(mod.Cox, newdata = pred.DATA.t1, type = "link")
-lgn.pred.5ys1 <- predict(mod.lgn, newdata = pred.DATA.t1, type = "link")
-wbl.pred.5ys1 <- predict(mod.wbl, newdata = pred.DATA.t1, type = "link")
-rsf.pred.5ys1 <- predict(mod.rsf, newdata = pred.DATA.t1, type = "link")
-
-TI.pred.5ys2  <- predict(mod.TI, newdata = pred.DATA.t2, type = "link")
-Cox.pred.5ys2 <- predict(mod.Cox, newdata = pred.DATA.t2, type = "link")
-lgn.pred.5ys2 <- predict(mod.lgn, newdata = pred.DATA.t2, type = "link")
-wbl.pred.5ys2 <- predict(mod.wbl, newdata = pred.DATA.t2, type = "link")
-rsf.pred.5ys2 <- predict(mod.rsf, newdata = pred.DATA.t2, type = "link")
-
-
-
-
-
-
-par(mfrow = c(1, 2))
-
-
-plot(TI.pred.5ys1 ~ I(1.2 * 1:100), type = "l", ylim = c(0, 1), xlab = "Tumor Size (mm)", 
-	ylab = "Five-Year Survival")
-lines(Cox.pred.5ys1 ~ I(1.2 * 1:100), col = 1, lty = 3)
-lines(wbl.pred.5ys1 ~ I(1.2 * 1:100), col = 1, lty = 2)
-lines(rsf.pred.5ys1 ~ I(1.2 * 1:100), col = 1, lty = 4)
-lines(lgn.pred.5ys1 ~ I(1.2 * 1:100), col = 1, lty = 5)
-rug(jitter(stacked.est$predictors[,2]), tick = 0.03)
-	
-legend(x = 2, y = 0.475,c("RSF", "Stacked", "log-Normal", "Weibull", "Cox"), 
-	lty = c(4, 1, 5, 2, 3), col = rep(1,5), cex = 0.65)
-	
-	
-plot(TI.pred.5ys2 ~ I(0.5 * 1:100), type = "l", ylim = c(0, 1), xlab = "Number of Nodes", 
-	ylab = "Five-Year Survival")
-lines(Cox.pred.5ys2 ~ I(0.5 * 1:100), col = 1, lty = 3)
-lines(wbl.pred.5ys2 ~ I(0.5 * 1:100), col = 1, lty = 2)
-lines(rsf.pred.5ys2 ~ I(0.5 * 1:100), col = 1, lty = 4)
-lines(lgn.pred.5ys2 ~ I(0.5 * 1:100), col = 1, lty = 5)
-rug(stacked.est $predictors[,4], tick = 0.03)
 
 
 
