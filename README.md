@@ -19,4 +19,8 @@ patient.csv: https://www.kaggle.com/datasets/kimjihoo/coronavirusdataset?select=
 2. The library: MASS, survival, randomForestSRC, alabama, tidyverse, survivalROC.
 3. The code for stacked method is in COVID.R. Please, change the root for specific folder.
 4. To know the weight, just write stacked.est$alphas
+5. Result 
+
+a. The qqplot shows that the lognormal distribution is better distribution for the dataset
+b. The ROC of stacked method and rsf has similar result
  
