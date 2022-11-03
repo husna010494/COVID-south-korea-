@@ -22,5 +22,6 @@ patient.csv: https://www.kaggle.com/datasets/kimjihoo/coronavirusdataset?select=
 5. Result 
 
 a. The qqplot shows that the lognormal distribution is better distribution for the dataset
+
 b. The ROC of stacked method and rsf has similar result
  
