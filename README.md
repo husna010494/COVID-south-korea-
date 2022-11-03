@@ -26,3 +26,20 @@ a. The qqplot shows that the lognormal distribution is better distribution for t
 
 b. The ROC of stacked method and rsf has similar result
  
+#Installation instructions / Run Instructions
+
+Step 1: Install all libraries in your R.
+
+Step 2a: Open "COVID.R"
+
+Step 2b: Run all code in "Covid model.R" after change the spesific root.
+
+Step 3: Run all code "ROC.R" and then change the marker by type model.
+
+Step 4: write summary(mod.ln) and summary(mod.cox) for result of each model.
+
+Step 5: write stacked.est$alphas to weight from each model for stacked model.
+
+#Requirements
+
+This was created and tested on an R X64. 4.0.3.
