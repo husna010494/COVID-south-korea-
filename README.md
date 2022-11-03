@@ -17,10 +17,11 @@ patient.csv: https://www.kaggle.com/datasets/kimjihoo/coronavirusdataset?select=
  
  g. status: 1: uncensored , 0: censored
  
-2. The library: MASS, survival, randomForestSRC, alabama, tidyverse, survivalROC, car.
-3. The code for stacked method is in COVID.R. Please, change the root for specific folder.
-4. To know the weight, just write stacked.est$alphas
-5. Result 
+2. The independent variables are sex and age
+3. The library: MASS, survival, randomForestSRC, alabama, tidyverse, survivalROC, car.
+4. The code for stacked method is in COVID.R. Please, change the root for specific folder.
+5. To know the weight, just write stacked.est$alphas
+6. Result 
 
 a. The qqplot shows that the lognormal distribution is better distribution for the dataset
 
