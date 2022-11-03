@@ -17,7 +17,7 @@ patient.csv: https://www.kaggle.com/datasets/kimjihoo/coronavirusdataset?select=
  
  g. status: 1: uncensored , 0: censored
  
-2. The library: MASS, survival, randomForestSRC, alabama, tidyverse, survivalROC.
+2. The library: MASS, survival, randomForestSRC, alabama, tidyverse, survivalROC, car.
 3. The code for stacked method is in COVID.R. Please, change the root for specific folder.
 4. To know the weight, just write stacked.est$alphas
 5. Result 
