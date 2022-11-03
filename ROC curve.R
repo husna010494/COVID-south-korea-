@@ -6,6 +6,7 @@ stacked.est$alphas[2]*cox.predict+
 stacked.est$alphas[3]*rsf.predict
 
 library(survivalROC)
+library(tydiverse)
 ## Define a helper function to evaluate at various t
 survivalROC_helper <- function(t) {
     survivalROC(Stime        = dat2$time,
